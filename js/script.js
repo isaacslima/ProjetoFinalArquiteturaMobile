@@ -2,6 +2,12 @@ const API_URL = 'https://api.exchangerate-api.com/v4/latest/';
 
 let expenses = [];
 
+if (!navigator.serviceWorker.controller) {
+  navigator.serviceWorker.register("sw.js").then(function(reg) {
+      console.log("Service worker has been registered for scope: " + reg.scope);
+  });
+}
+
 document.getElementById('expense-form').addEventListener('submit', async (e) => {
     e.preventDefault();
   
@@ -10,9 +16,11 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
     const value = parseFloat(document.getElementById('value').value);
     const currencyFrom = document.getElementById('currencyFrom').value;
     const currencyTo = document.getElementById('currencyTo').value;
+
+    localStorage.setItem("quatidade", quantity);
   
     const convertedValue = await convertCurrency(value, currencyFrom, currencyTo);
-    const totalConverted = (convertedValue * quantity).toFixed(2); // Corrigido
+    const totalConverted = (convertedValue * quantity).toFixed(2);
   
     const expense = { 
       description, 
@@ -21,10 +29,15 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
       convertedValue: 
       parseFloat(totalConverted), currencyTo 
     };
-  
+
+    let expensesLocalStorage = localStorage.getItem("expenses");
+
+    if(typeof expensesLocalStorage === "object" && expensesLocalStorage){
+      expenses = JSON.parse(expensesLocalStorage);
+    }
+
     expenses.push(expense);
-    updateExpenseList();
-    updateTotals();
+    localStorage.setItem("expenses", JSON.stringify(expenses));
     e.target.reset();
 
     let message = description + " adicionado."
@@ -33,9 +46,12 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
   });
   
   async function convertCurrency(value, from, to) {
-    const res = await fetch(`${API_URL}${from}`);
-    const data = await res.json();
-    return (value * data.rates[to]).toFixed(2);
+    //const res = await fetch(`${API_URL}${from}`);
+    //const data = await res.json();
+    //let valueConversion = data.rates[to];
+    let valueConversion = 5.6;
+
+    return (value * valueConversion).toFixed(2);
   }
   
   function updateExpenseList() {

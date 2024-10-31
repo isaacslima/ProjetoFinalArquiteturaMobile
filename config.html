@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Despesas em Viagens</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="manifest" href="manifest.json">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <nav> 
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo" alt="logo">
+            <img src="assets/logo.png" height="60px" width="80px"/>
+          </a>
+        
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="list.html">Despesas</a></li>
+          <li><a href="config.html">Configurações</a></li>
+        </ul>
+        <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      </div>  
+    
+      <ul id="slide-out" class="sidenav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="list.html">Despesas</a></li>
+        <li><a href="config.html">Configurações</a></li>
+      </ul>
+      <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      </nav>
+
+  <div class="row">
+    <form id="currency-form" class="col s12">
+      <div class="row">
+        <div class="input-field col s12">
+          <select id="currencyFrom">
+            <option value="BRL" selected>BRL</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <label>Moeda origem</label>
+        </div>
+  
+        <div class="input-field col s12">
+          <select id="currencyTo">
+            <option value="BRL" selected>BRL</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+          <label>Moeda destino</label>
+        </div>
+      </div>
+      
+      <div class="row">
+        <button class="waves-effect waves-light btn" type="submit"><i class="material-icons left">payments</i>Salvar</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="js/script.js"></script>
+  <script src="js/currency.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

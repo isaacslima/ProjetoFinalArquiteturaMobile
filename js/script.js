@@ -22,25 +22,25 @@ let expenses = [];
       item.className = 'expense-item';
       item.innerHTML = `
           <div class="card-panel">
-          <div class="row">
-            <div class="col s12">
-              <p id="description"><b>Descrição: </b> ${expense.description}</p> 
-            </div>
-            <div class="col s4">
-              <p id="quantity"><b>Quantidade: </b> ${expense.quantity}</p> 
-            </div>
-
-            <div class="col s4">   
-              <span id="value"><b>Valor unitário: </b> $</span>
-                <span>${expense.value} </span> <span id="currencyFrom">${expense.currencyFrom}</span> 
-              <p>
+            <div class="row">
+              <div class="col s12">
+                <p id="description"><b>Descrição: </b> ${expense.description}</p> 
               </div>
-            <div class="col s4">  
-                <b>Total em  </b>
-                <span id="currencyTo">${expense.currencyTo} </span>
-                <span>$ ${expense.convertedValue}</span> 
+              <div class="col s4">
+                <p id="quantity"><b>Quantidade: </b> ${expense.quantity}</p> 
+              </div>
+
+              <div class="col s4">   
+                <span id="value"><b>Valor unitário: </b> $</span>
+                  <span>${expense.value} </span> <span id="currencyFrom">${expense.currencyFrom}</span> 
+                <p>
+                </div>
+              <div class="col s4">  
+                  <b>Total em  </b>
+                  <span id="currencyTo">${expense.currencyTo} </span>
+                  <span>$ ${expense.convertedValue}</span> 
+              </div>
             </div>
-          </div>
             <span 
               class="material-icons edit-icon" 
               onclick="editExpense(${expense.id})"
@@ -109,9 +109,4 @@ document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.sidenav');
     var instances = M.Sidenav.init(elems,   
  {});
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  var elems = document.querySelectorAll('.scrollspy');
-  var instances = M.ScrollSpy.init(elems, options);
 });

@@ -6,3 +6,10 @@
     right: 35px;
     bottom: 35px;
 }
+
+.scroll-container {
+    width: 300px;
+    height: 80vh;
+    overflow-y: scroll;
+    border: 1px solid #ccc;
+}

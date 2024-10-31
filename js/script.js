@@ -8,77 +8,54 @@ if (!navigator.serviceWorker.controller) {
   });
 }
 
-document.getElementById('expense-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-  
-    const description = document.getElementById('description').value;
-    const quantity = parseFloat(document.getElementById('quantity').value);
-    const value = parseFloat(document.getElementById('value').value);
-    const currencyFrom = document.getElementById('currencyFrom').value;
-    const currencyTo = document.getElementById('currencyTo').value;
-
-    localStorage.setItem("quatidade", quantity);
-  
-    const convertedValue = await convertCurrency(value, currencyFrom, currencyTo);
-    const totalConverted = (convertedValue * quantity).toFixed(2);
-  
-    const expense = { 
-      description, 
-      quantity,value, 
-      currencyFrom,  
-      convertedValue: 
-      parseFloat(totalConverted), currencyTo 
-    };
-
-    let expensesLocalStorage = localStorage.getItem("expenses");
-
-    if(typeof expensesLocalStorage === "object" && expensesLocalStorage){
-      expenses = JSON.parse(expensesLocalStorage);
-    }
-
-    expenses.push(expense);
-    localStorage.setItem("expenses", JSON.stringify(expenses));
-    e.target.reset();
-
-    let message = description + " adicionado."
-
-    M.toast({html: message})
-  });
-  
   async function convertCurrency(value, from, to) {
-    //const res = await fetch(`${API_URL}${from}`);
-    //const data = await res.json();
-    //let valueConversion = data.rates[to];
-    let valueConversion = 5.6;
+    const res = await fetch(`${API_URL}${from}`);
+    const data = await res.json();
+    let valueConversion = data.rates[to];
 
     return (value * valueConversion).toFixed(2);
   }
   
   function updateExpenseList() {
+
+    expenses = JSON.parse(localStorage.getItem("expenses"));
+
     const list = document.getElementById('expenses-list');
     list.innerHTML = '';
   
-    expenses.forEach((expense, index) => {
+    expenses.forEach((expense ) => {
       const item = document.createElement('div');
       item.className = 'expense-item';
       item.innerHTML = `
           <div class="card-panel">
           <div class="row">
-            <p><b>Descrição: </b> ${expense.description}</p> 
-            <p><b>Quantidade: </b> ${expense.quantity}</p> 
-            <p><b>Valor unitário: </b> $${expense.value} ${expense.currencyFrom}</p> 
-            <p><b>Total em  </b> ${expense.currencyTo} $${expense.convertedValue}</p> 
+            <div class="col s12">
+              <p id="description"><b>Descrição: </b> ${expense.description}</p> 
+            </div>
+            <div class="col s4">
+              <p id="quantity"><b>Quantidade: </b> ${expense.quantity}</p> 
+            </div>
+
+            <div class="col s4">   
+              <span id="value"><b>Valor unitário: </b> $</span>
+                <span>${expense.value} </span> <span id="currencyFrom">${expense.currencyFrom}</span> 
+              <p>
+            <div class="col s4">  
+                <b>Total em  </b>
+                <span id="currencyTo">${expense.currencyTo} </span>
+                <span>$ ${expense.convertedValue}</span> 
+            </div>
           </div>
             <span 
               class="material-icons edit-icon" 
-              onclick="editExpense(${index})"
+              onclick="editExpense(${expense.id})"
               style="cursor: pointer; margin-left: 10px; color: #007bff;">
               edit
             </span>
 
             <span 
               class="material-icons delete-icon" 
-              onclick="deleteExpense(${index})"
+              onclick="deleteExpense(${expense.id})"
               style="cursor: pointer; margin-left: 10px; color: #dc3545;">
               delete
             </span>
@@ -87,38 +64,48 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
     });
   }
   
-  function updateTotals() {
-    const totalOriginal = expenses.reduce((acc, exp) => acc + (exp.value * exp.quantity), 0);
-    const totalConverted = expenses.reduce((acc, exp) => acc + exp.convertedValue, 0);
-  
-    document.getElementById('total-original').textContent = `Total (Moeda de Origem): ${totalOriginal.toFixed(2)}`;
-    document.getElementById('total-converted').textContent = `Total (Moeda de Destino): ${totalConverted.toFixed(2)}`;
-  }
-  
-  function editExpense(index) {
-    const expense = expenses[index];
-    document.getElementById('description').value = expense.description;
-    document.getElementById('quantity').value = expense.quantity;
-    document.getElementById('value').value = expense.value;
-    document.getElementById('currencyFrom').value = expense.currencyFrom;
-    document.getElementById('currencyTo').value = expense.currencyTo;
-    expenses.splice(index, 1);
-    updateExpenseList();
-    updateTotals();
+  function editExpense(id) {
+    let expense = getExpense(id);
+    
+    localStorage.setItem("description", expense.description);
+    localStorage.setItem("quantity", expense.quantity);
+    localStorage.setItem("value", expense.value);
+    localStorage.setItem("currencyFrom", expense.currencyFrom);
+    localStorage.setItem("currencyTo", expense.currencyTo);
+
+    window.location.href = 'add.html';
   }
 
-  function deleteExpense(index) {
-    const deletedItem = expenses[index].description;
+  function getExpense(id){
+    let expenses = JSON.parse(localStorage.getItem("expenses"));
+    console.log(id)
+    let expense = expenses.find((item) => item.id === id);
+    return expense;
+  }
+
+  function deleteExpense(id) {
+    let itemTodelete = getExpense(id);
     
-    const confirmation = confirm(`Tem certeza de que deseja deletar o item "${deletedItem}"?`);
+    const confirmation = confirm(`Tem certeza de que deseja deletar o item "${itemTodelete.description}"?`);
   
     if (confirmation) {
+      expenses = JSON.parse(localStorage.getItem("expenses"));
       expenses.splice(index, 1);
-      updateExpenseList();
-      updateTotals();
 
-      M.toast({html: `O item "${deletedItem}" foi deletado.`})
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+
+      M.toast({html: `O item "${deletedItem}" foi deletado.`});
+
+      updateExpenseList();
     } else {
-      M.toast({html: `A exclusão do item "${deletedItem}" foi cancelada.`})
+      M.toast({html: `A exclusão do item "${deletedItem}" foi cancelada.`});
+      updateExpenseList();
     }
   }
+
+  function generateGuid() {
+    return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+      (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
+    );
+  }
+  updateExpenseList();

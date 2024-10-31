@@ -37,3 +37,9 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
 
     M.toast({html: message})
   });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems,   
+ {});
+});

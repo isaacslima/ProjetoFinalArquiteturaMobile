@@ -1,3 +1,4 @@
+const API_URL = 'https://api.exchangerate-api.com/v4/latest/';
 
 document.getElementById('currency-form').addEventListener('submit', async (e) => {
     e.preventDefault();

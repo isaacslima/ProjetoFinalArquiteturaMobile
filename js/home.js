@@ -1,18 +1,22 @@
+
+if (!navigator.serviceWorker.controller) {
+    navigator.serviceWorker.register("sw.js").then(function(reg) {
+        console.log("Service worker has been registered for scope: " + reg.scope);
+    });
+  }
 function updateTotals() {
+
     let currencyFrom = localStorage.getItem("currencyFrom");
-    let currencyTo = localStorage.getItem("currencyFrom");
 
-    console.log(currencyFrom)
+    let currencyTo = localStorage.getItem("currencyTo");
+
     if(typeof(currencyFrom) === "object" && !currencyFrom){
-        localStorage.setItem("currencyFrom", "BRL")
+        localStorage.setItem("currencyFrom", "USD")
     };
 
-
-    console.log(currencyTo)
     if(typeof(currencyTo) === "object" && !currencyTo){
-        localStorage.setItem("currencyTo", "USD")
+        localStorage.setItem("currencyTo", "BRL")
     };
-
     let expensesLocalStorage = localStorage.getItem("expenses");
 
     const expenses = JSON.parse(expensesLocalStorage);
@@ -23,8 +27,8 @@ function updateTotals() {
     const totalOriginal = expenses.reduce((acc, exp) => acc + (exp.value * exp.quantity), 0);
     const totalConverted = expenses.reduce((acc, exp) => acc + exp.convertedValue, 0);
   
-    document.getElementById('total-original').textContent = `Total (Moeda de Origem): ${totalOriginal.toFixed(2)}`;
-    document.getElementById('total-converted').textContent = `Total (Moeda de Destino): ${totalConverted.toFixed(2)}`;
+    document.getElementById('total-original').textContent = `Total ${currencyFrom}: ${totalOriginal.toFixed(2)}`;
+    document.getElementById('total-converted').textContent = `Total ${currencyTo    }: ${totalConverted.toFixed(2)}`;
   }
 
 document.addEventListener('DOMContentLoaded', function() {

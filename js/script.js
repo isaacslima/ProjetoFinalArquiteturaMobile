@@ -2,12 +2,6 @@ const API_URL = 'https://api.exchangerate-api.com/v4/latest/';
 
 let expenses = [];
 
-if (!navigator.serviceWorker.controller) {
-  navigator.serviceWorker.register("sw.js").then(function(reg) {
-      console.log("Service worker has been registered for scope: " + reg.scope);
-  });
-}
-
   async function convertCurrency(value, from, to) {
     const res = await fetch(`${API_URL}${from}`);
     const data = await res.json();
@@ -40,6 +34,7 @@ if (!navigator.serviceWorker.controller) {
               <span id="value"><b>Valor unitário: </b> $</span>
                 <span>${expense.value} </span> <span id="currencyFrom">${expense.currencyFrom}</span> 
               <p>
+              </div>
             <div class="col s4">  
                 <b>Total em  </b>
                 <span id="currencyTo">${expense.currencyTo} </span>

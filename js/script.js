@@ -14,7 +14,7 @@ let expenses = [];
 
     expenses = JSON.parse(localStorage.getItem("expenses"));
 
-    const list = document.getElementById('expenses-list');
+    let list = document.getElementById('expenses-list');
     list.innerHTML = '';
   
     expenses.forEach((expense ) => {
@@ -43,14 +43,15 @@ let expenses = [];
             </div>
             <span 
               class="material-icons edit-icon" 
-              onclick="editExpense(${expense.id})"
+              onclick="editExpense('${expense.id}')"
+              id="edit-button"
               style="cursor: pointer; margin-left: 10px; color: #007bff;">
               edit
             </span>
 
             <span 
               class="material-icons delete-icon" 
-              onclick="deleteExpense(${expense.id})"
+              onclick="deleteExpense('${expense.id}')"
               style="cursor: pointer; margin-left: 10px; color: #dc3545;">
               delete
             </span>
@@ -68,6 +69,8 @@ let expenses = [];
     localStorage.setItem("currencyFrom", expense.currencyFrom);
     localStorage.setItem("currencyTo", expense.currencyTo);
 
+    localStorage.setItem("id", id);
+
     window.location.href = 'add.html';
   }
 
@@ -82,20 +85,20 @@ let expenses = [];
     let itemTodelete = getExpense(id);
     
     const confirmation = confirm(`Tem certeza de que deseja deletar o item "${itemTodelete.description}"?`);
-  
+    
     if (confirmation) {
       expenses = JSON.parse(localStorage.getItem("expenses"));
-      expenses.splice(index, 1);
+       
+      const expensesUpdated = expenses.filter(item => item.id !== id);
 
-      localStorage.setItem("expenses", JSON.stringify(expenses));
+      localStorage.setItem("expenses", JSON.stringify(expensesUpdated));
 
-      M.toast({html: `O item "${deletedItem}" foi deletado.`});
-
-      updateExpenseList();
+      M.toast({html: `O item "${itemTodelete.description}" foi deletado.`});
     } else {
-      M.toast({html: `A exclusão do item "${deletedItem}" foi cancelada.`});
-      updateExpenseList();
+      M.toast({html: `A exclusão do item "${itemTodelete.description}" foi cancelada.`});
     }
+
+    updateExpenseList();
   }
 
   function generateGuid() {
@@ -103,10 +106,19 @@ let expenses = [];
       (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16)
     );
   }
-  updateExpenseList();
+  
 
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.sidenav');
     var instances = M.Sidenav.init(elems,   
  {});
 });
+
+function addNew()
+{
+  localStorage.removeItem("description");
+  localStorage.removeItem("value");
+  localStorage.removeItem("quantity");
+  localStorage.removeItem("id");
+  window.location.href = "add.html";
+}
